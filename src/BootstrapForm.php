@@ -49,18 +49,17 @@ class BootstrapForm extends Form
 	/**
 	 * @param IContainer|null $container
 	 */
-	public function __construct($container = null)
+	public function __construct($container = null, ?string $name = null)
 	{
-		parent::__construct($container);
-
-		$this->setRenderer(new BootstrapRenderer());
-
-		$prototype = Html::el('form', [
+		$this->elementPrototype = Html::el('form', [
 			'action' => '',
 			'method' => self::Post,
 			'class' => [],
 		]);
-		$this->elementPrototype = $prototype;
+
+		parent::__construct($container, $name);
+
+		$this->setRenderer(new BootstrapRenderer());
 
 		/**
 		 * @param BootstrapForm $form

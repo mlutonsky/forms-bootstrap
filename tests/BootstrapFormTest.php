@@ -5,6 +5,7 @@ namespace Tests;
 use Contributte\FormsBootstrap\BootstrapForm;
 use Contributte\FormsBootstrap\Enums\BootstrapVersion;
 use Contributte\FormsBootstrap\Enums\RenderMode;
+use Nette\Application\UI\Presenter;
 use Nette\Forms\Rendering\DefaultFormRenderer;
 
 class BootstrapFormTest extends BaseTest
@@ -34,6 +35,26 @@ class BootstrapFormTest extends BaseTest
 
 		BootstrapForm::switchBootstrapVersion(BootstrapVersion::V4);
 		$this->assertEquals(BootstrapVersion::V4, BootstrapForm::getBootstrapVersion());
+	}
+
+	public function testAttachFormToPresenter(): void
+	{
+		$presenter = new class extends Presenter {
+			public function createComponentTestForm(string $name): BootstrapForm
+			{
+				$form = new BootstrapForm($this, $name);
+				$form->addSubmit('submit', 'Submit');
+
+				return $form;
+			}
+		};
+
+		$form = $presenter->getComponent('testForm');
+
+		$this->assertInstanceOf(BootstrapForm::class, $form);
+		$this->assertNotNull($form['submit']);
+
+		$this->assertSame($presenter, $form->getParent());
 	}
 
 }
